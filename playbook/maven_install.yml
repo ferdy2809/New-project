@@ -1,0 +1,35 @@
+---
+- name: install apache maven
+  hosts: all
+  become: yes
+  tasks:
+  - name: update apt update_cache
+    apt:
+      update_cache: yes
+  - name: Download and install openjdk-23
+    get_url: url=https://download.oracle.com/java/23/latest/jdk-23_linux-aarch64_bin.tar.gz dest=/opt/jdk-23_linux-aarch64_bin.tar.gz
+  - name: Untar openjdk-23
+    shell: chdir=/tmp creates=/opt/jdk-23_linux-aarch64_bin tar -zxf  /opt/jdk-23_linux-aarch64_bin.tar.gz -C /opt
+  - name: Set JAVA_HOME
+    lineinfile:
+      dest: /etc/profile.d/jdk.sh
+      create: yes
+      line: '{{ item }}'
+    with_items:
+      - 'export JAVA_HOME=/opt/jdk-23_linux-aarch64'
+      - 'export PATH=${JAVA_HOME}/bin:${PATH}'
+
+  - name: Download apache maven
+    get_url: url=https://downloads.apache.org/maven/maven-3/3.9.9/binaries/apache-maven-3.9.9-bin.tar.gz dest=/opt/apache-maven-3.9.9-bin.tar.gz    
+  - name: Untar maven
+    shell: chdir=/tmp creates=/opt/apache-maven-3.9.9 tar -zxf  /opt/apache-maven-3.9.9-bin.tar.gz -C /opt
+
+  - name: Set MAVEN_HOME
+    lineinfile:
+      dest: /etc/profile.d/maven.sh
+      create: yes
+      line: '{{ item }}'
+    with_items:
+      - 'export M2_HOME=/opt/apache-maven-3.9.9'
+      - 'export MAVEN_HOME=/opt/apache-maven-3.9.9'
+      - 'export PATH=${M2_HOME}/bin:${PATH}'  

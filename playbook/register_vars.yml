@@ -1,0 +1,11 @@
+---
+- name: "Register variables"
+  hosts: all
+  become: yes
+  tasks:
+    - name: "Register variable"
+      shell: "echo 'Hello World'"
+      register: output
+    - name: "Print variable"
+      debug:
+        var: output.stdout

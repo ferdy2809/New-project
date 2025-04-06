@@ -1,0 +1,14 @@
+---
+- name: Start/Stop webservice
+  hosts: all
+  become: yes
+  vars_promt:
+  - name: webservice
+    promt: Enter the webservice to start/stop (nginx or apache2)
+  - name: webservice_state
+    prompt: Enter the state of the webservice desired (started or stopped)
+  tasks:
+  - name: starting/stopping webservice
+    service:                                                                                                              
+      name: "{{ webservice }}"                                                                                             
+      state: "{{ webservice_state }}"     
